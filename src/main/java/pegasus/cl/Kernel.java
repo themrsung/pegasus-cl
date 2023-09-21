@@ -1,6 +1,7 @@
 package pegasus.cl;
 
 import org.jocl.*;
+import pegasus.pointer.*;
 
 /**
  * A reference to an OpenCL kernel.
@@ -8,6 +9,45 @@ import org.jocl.*;
  * @see PCL
  */
 public final class Kernel {
+    /**
+     * Sets the {@code i}th argument of this kernel as an input value.
+     *
+     * @param i  The index of the argument to set
+     * @param in The input values
+     * @return A reference to this kernel itself ({@code this})
+     */
+    public Kernel setInput(int i, DoublePointer in) {
+        memory[i] = PCL.createReadOnlyBuffer(in.asArray());
+        PCL.setKernelArgument(this, i, Sizeof.cl_mem, Pointer.to(memory[i]));
+        return this;
+    }
+
+    /**
+     * Sets the {@code i}th argument of this kernel as an input value.
+     *
+     * @param i  The index of the argument to set
+     * @param in The input values
+     * @return A reference to this kernel itself ({@code this})
+     */
+    public Kernel setInput(int i, LongPointer in) {
+        memory[i] = PCL.createReadOnlyBuffer(in.asArray());
+        PCL.setKernelArgument(this, i, Sizeof.cl_mem, Pointer.to(memory[i]));
+        return this;
+    }
+
+    /**
+     * Sets the {@code i}th argument of this kernel as an input value.
+     *
+     * @param i  The index of the argument to set
+     * @param in The input values
+     * @return A reference to this kernel itself ({@code this})
+     */
+    public Kernel setInput(int i, IntPointer in) {
+        memory[i] = PCL.createReadOnlyBuffer(in.asArray());
+        PCL.setKernelArgument(this, i, Sizeof.cl_mem, Pointer.to(memory[i]));
+        return this;
+    }
+
     /**
      * Sets the {@code i}th argument of this kernel as an input value.
      *
@@ -95,6 +135,45 @@ public final class Kernel {
      */
     public Kernel setInput(int i, char[] in) {
         memory[i] = PCL.createReadOnlyBuffer(in);
+        PCL.setKernelArgument(this, i, Sizeof.cl_mem, Pointer.to(memory[i]));
+        return this;
+    }
+
+    /**
+     * Sets the {@code i}th argument of this kernel as an output value.
+     *
+     * @param i   The index of the argument to set
+     * @param out The output array
+     * @return A reference to this kernel itself ({@code this})
+     */
+    public Kernel setOutput(int i, DoublePointer out) {
+        memory[i] = PCL.createWriteOnlyBuffer(out.asArray());
+        PCL.setKernelArgument(this, i, Sizeof.cl_mem, Pointer.to(memory[i]));
+        return this;
+    }
+
+    /**
+     * Sets the {@code i}th argument of this kernel as an output value.
+     *
+     * @param i   The index of the argument to set
+     * @param out The output array
+     * @return A reference to this kernel itself ({@code this})
+     */
+    public Kernel setOutput(int i, LongPointer out) {
+        memory[i] = PCL.createWriteOnlyBuffer(out.asArray());
+        PCL.setKernelArgument(this, i, Sizeof.cl_mem, Pointer.to(memory[i]));
+        return this;
+    }
+
+    /**
+     * Sets the {@code i}th argument of this kernel as an output value.
+     *
+     * @param i   The index of the argument to set
+     * @param out The output array
+     * @return A reference to this kernel itself ({@code this})
+     */
+    public Kernel setOutput(int i, IntPointer out) {
+        memory[i] = PCL.createWriteOnlyBuffer(out.asArray());
         PCL.setKernelArgument(this, i, Sizeof.cl_mem, Pointer.to(memory[i]));
         return this;
     }
@@ -198,6 +277,42 @@ public final class Kernel {
      */
     public Kernel execute(long workSize) {
         PCL.executeKernel(this, workSize);
+        return this;
+    }
+
+    /**
+     * Reads the {@code i}th argument of this kernel after execution.
+     *
+     * @param i   The index of the argument to read
+     * @param out The array of which to output the values to
+     * @return A reference to this kernel itself ({@code this})
+     */
+    public Kernel read(int i, DoublePointer out) {
+        PCL.readBuffer(memory[i], Sizeof.cl_double * (long) out.size(), Pointer.to(out.asArray()));
+        return this;
+    }
+
+    /**
+     * Reads the {@code i}th argument of this kernel after execution.
+     *
+     * @param i   The index of the argument to read
+     * @param out The array of which to output the values to
+     * @return A reference to this kernel itself ({@code this})
+     */
+    public Kernel read(int i, LongPointer out) {
+        PCL.readBuffer(memory[i], Sizeof.cl_long * (long) out.size(), Pointer.to(out.asArray()));
+        return this;
+    }
+
+    /**
+     * Reads the {@code i}th argument of this kernel after execution.
+     *
+     * @param i   The index of the argument to read
+     * @param out The array of which to output the values to
+     * @return A reference to this kernel itself ({@code this})
+     */
+    public Kernel read(int i, IntPointer out) {
+        PCL.readBuffer(memory[i], Sizeof.cl_int * (long) out.size(), Pointer.to(out.asArray()));
         return this;
     }
 
